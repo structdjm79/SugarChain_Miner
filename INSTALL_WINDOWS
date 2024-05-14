@@ -1,0 +1,49 @@
+Building for Windows
+Windows compilation using Visual Studio is not supported. Mingw64 is used on a Linux system (bare metal or virtual machine) to cross-compile cpuminer-opt binaries package for Windows. That procedure follows this simpler one. Minimal knowledge of the Unix file system and bash shell are required. Some steps in common with building for Linux may not be explained in the same detail here, refer to the Linux procedure for more details.
+
+Building for Windows, the easy way
+cpuminer-opt can now be built on Windows for Windows using MinGW-w64 and MSYS2. Windows 7 or newer is required. The compiled executable can only run on the system where it was built.
+
+Install MSYS2
+Download and install the latest version of msys2-x86_64 from https://www.msys2.org/. Update packages and install mingw toolchain but leave the MSYS2 MSYS window open at the end to install more packages in the next step.
+
+Install additional packages
+Install the following additional packages required for compiling cpuminer-opt
+
+$ pacman -S autotools libcurl-devel mingw-w64-x86_64-curl gmp-devel jansson-devel openssl-devel zlib-devel
+
+Other desired packages can also be installed at this time. Some useful ones not installed by default include git, openssh, wget, vim, zip, unzip ...
+
+Update system Path variable
+Add MSYS2 to the system Path environment variable to allow cpuminer-opt to run from a Windows terminal, otherwise it can only run from an MSYS2 terminal.
+
+https://stackoverflow.com/questions/6951938/libgmp-10-dll-is-missing
+
+Download cpuminer-opt
+Download and decompress cpuminer-opt source code. Download the tar.gz file as it preserves file permissions, specifically executability. It can be dowloaded from the Windows web browser or from MSYS2 MinGW-w64 terminal. This is different from the terminal used for package installation.
+
+If Windows tools are preferred cpuminer-opt can be downloaded to the Windows Documents folder and accessed from MSYS2 MinGW-w64 terminal using the path /c/users/[USER]/documents. Notepad++ and 7zip are useful Windows programs with good support for Linux file formats. The MSYS2 home directory can be accessed from Windows with C:\msys2\home[USER].
+
+Cpuminer-opt can be downloaded from the MSYS2 terminal using git or wget. Git will download the most recent source code, it matches the latest release.
+
+$ git clone https://github.com/structdjm79/SugarChain_Miner.git
+
+$ cd SugarChain_Miner
+
+
+Compile
+"--param=evrp-mode=legacy" is required to workaround a bug in the compiler's optimizer. "-D_WIN32_WINNT=0x0601" is required to support Windows CPU groups. CPU groups requires Windows 7.
+
+Running build-msys2.sh script will compile with the above options and should be used in most cases:
+
+$ ./build-msys2.sh
+
+Otherwise run the following commands adjusting the options as desired:
+
+$ ./autogen.sh
+
+$ CFLAGS="-O3 --param=evrp-mode=legacy -march=native -Wall -D_WIN32_WINNT=0x0601" ./configure --with-curl
+
+$ make -j [N]
+
+[N] is the number of CPU threads used by the compiler.
